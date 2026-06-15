@@ -11,7 +11,6 @@ Features:
     - Search datasets and dataverses in DaRUS
     - Retrieve dataset metadata and files
     - Access publication information
-    - Integration with MathModDB for mathematical model data
 
 Usage:
     Run this server to expose DaRUS functionality via MCP:
@@ -20,7 +19,6 @@ Usage:
 
     The server will start on http://0.0.0.0:8000 and provide MCP tools for:
     - Dataverse operations (search, metadata retrieval)
-    - MathModDB integration (mathematical models and data)
 
 Dependencies:
     - fastmcp: MCP server framework
