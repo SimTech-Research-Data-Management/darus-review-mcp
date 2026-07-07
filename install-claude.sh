@@ -30,3 +30,19 @@ fi
 uv run fastmcp install claude-desktop main.py \
   --project . \
   --env "API_TOKEN=$token"
+
+# fastmcp writes a bare `uv` as the command. Claude Desktop is a GUI app with a
+# minimal PATH (no Homebrew), so it can't find `uv` and the server fails to
+# launch. Rewrite the command to the absolute uv path.
+uv_bin="$(command -v uv)"
+cfg="$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+python3 - "$cfg" "$uv_bin" <<'PY'
+import json, sys
+cfg, uv_bin = sys.argv[1], sys.argv[2]
+with open(cfg) as f:
+    data = json.load(f)
+data["mcpServers"]["darus-mcp"]["command"] = uv_bin
+with open(cfg, "w") as f:
+    json.dump(data, f, indent=2)
+print(f"Patched darus-mcp command -> {uv_bin}")
+PY
