@@ -23,10 +23,12 @@ Usage:
 Dependencies:
     - fastmcp: MCP server framework
     - pyDataverse: Dataverse API client
-    - asyncio: Async runtime support
+    - python-dotenv: loads API_TOKEN from a local .env file
 """
 
 import os
+import tomllib
+from pathlib import Path
 
 from dotenv import load_dotenv
 from fastmcp import FastMCP
@@ -35,23 +37,25 @@ from pyDataverse.mcp import DataverseMCP
 
 load_dotenv()
 
-# Load the API token from the environment variable
+# Load the API token from the environment variable.
 api_token = os.environ.get("API_TOKEN")
-if not api_token:
-    raise ValueError("API_TOKEN environment variable is not set")
 
 # Initialize connection to the DaRUS Dataverse instance
 # DaRUS is the institutional data repository of the University of Stuttgart
 darus = Dataverse(
     base_url="https://darus.uni-stuttgart.de",
-    api_token=os.environ.get("API_TOKEN"),
+    api_token=api_token,
     verbose=0,
 )
 
 
 # Create the FastMCP application
 # This serves as the main MCP server instance that will expose tools to clients
-app = FastMCP(name="darus-mcp", version="0.1.0")
+# ponytail: single source of truth for the version; assumes pyproject.toml sits
+# next to this file (true when run in-place, as uv/fastmcp do). Switch to
+# importlib.metadata if this ever ships as an installed package.
+_version = tomllib.loads((Path(__file__).parent / "pyproject.toml").read_text())["project"]["version"]
+app = FastMCP(name="darus-mcp", version=_version)
 
 # Register Dataverse MCP tools with the application
 # This adds all Dataverse-related tools (search, metadata, files) to the MCP server
@@ -63,13 +67,16 @@ if __name__ == "__main__":
     
     Starts the MCP server using streamable HTTP transport on all interfaces
     at port 8000. The server will handle MCP requests and provide access to
-    both DaRUS Dataverse tools and imported MathModDB tools.
+    the DaRUS Dataverse tools.
     
     Server Configuration:
         - Transport: streamable-http (compatible with MCP clients)
         - Host: 0.0.0.0 (accepts connections from any interface)
         - Port: 8000 (standard development port)
     """
+    if not api_token:
+        raise ValueError("API_TOKEN environment variable is not set")
+
     # Start the MCP server
     app.run(
         transport="streamable-http",
