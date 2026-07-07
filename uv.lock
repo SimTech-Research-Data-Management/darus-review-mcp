@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.12"
 
 [[package]]
@@ -301,18 +301,20 @@ wheels = [
 ]
 
 [[package]]
-name = "darus-mcp"
+name = "darus-review-mcp"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
     { name = "fastmcp" },
     { name = "pydataverse", extra = ["mcp"] },
+    { name = "python-dotenv" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "fastmcp", specifier = "==2.14.5" },
     { name = "pydataverse", extras = ["mcp"], git = "https://github.com/gdcc/pyDataverse.git?branch=refactor-api" },
+    { name = "python-dotenv", specifier = ">=1.2.1" },
 ]
 
 [[package]]
