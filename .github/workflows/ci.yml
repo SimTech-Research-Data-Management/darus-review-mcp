@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    # 06:00 UTC daily. Catches the pinned pyDataverse git branch drifting.
+    # Note: scheduled runs only fire on the default branch.
+    - cron: "0 6 * * *"
+
+jobs:
+  smoke:
+    name: ${{ matrix.os }} / py${{ matrix.python-version }}
+    runs-on: ${{ matrix.os }}
+    # py3.14 is informational only (SWIG deprecation warnings, unofficial support).
+    continue-on-error: ${{ matrix.python-version == '3.14' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.12", "3.13", "3.14"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv and set Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+
+      - name: Build environment
+        shell: bash
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            uv sync --upgrade    # nightly: test against latest of every dep
+          else
+            uv sync --locked     # push/PR: reproducible from uv.lock
+          fi
+
+      - name: Smoke tests
+        run: uv run python test_smoke.py
