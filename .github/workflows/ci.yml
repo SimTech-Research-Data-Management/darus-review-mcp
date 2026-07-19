@@ -39,5 +39,5 @@ jobs:
             uv sync --locked     # push/PR: reproducible from uv.lock
           fi
 
-      - name: Smoke tests
-        run: uv run python test_smoke.py
+      - name: Tests
+        run: uv run python test_darus.py

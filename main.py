@@ -50,11 +50,9 @@ darus = Dataverse(
 
 
 # Create the FastMCP application
-# This serves as the main MCP server instance that will expose tools to clients
-# ponytail: single source of truth for the version; assumes pyproject.toml sits
-# next to this file (true when run in-place, as uv/fastmcp do). Switch to
-# importlib.metadata if this ever ships as an installed package.
-_version = tomllib.loads((Path(__file__).parent / "pyproject.toml").read_text())["project"]["version"]
+_version = tomllib.loads((Path(__file__).parent / "pyproject.toml").read_text())[
+    "project"
+]["version"]
 app = FastMCP(name="darus-mcp", version=_version)
 
 # Register Dataverse MCP tools with the application
