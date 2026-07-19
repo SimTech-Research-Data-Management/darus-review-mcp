@@ -36,8 +36,89 @@ def test_serves_tools_over_mcp():
             return await client.list_tools()
 
     tools = asyncio.run(list_tools())
-    assert len(tools) == 12, f"expected 12 tools served, got {len(tools)}"
+    names = {t.name for t in tools}
+    assert len(tools) == 16, f"expected 16 tools served, got {len(tools)}"
+    assert "Create_Dataset" in names, "Create_Dataset write tool not served"
+    assert "Edit_Dataset_Metadata" in names, "Edit_Dataset_Metadata tool not served"
+    assert "Edit_Dataset_Fields" in names, "Edit_Dataset_Fields generic tool not served"
+    assert "Search_Vocabulary" in names, "Search_Vocabulary tool not served"
     print(f"[ok] import clean, {len(tools)} tools served over MCP")
+
+
+def test_create_dataset_tool_schema():
+    """The write tool must be exposed with its required citation fields, so a
+    client knows what to supply. Registration needs no token (execution does)."""
+    os.environ.pop("API_TOKEN", None)
+    from fastmcp import Client  # noqa: PLC0415
+
+    import main  # noqa: PLC0415
+
+    async def get_schema():
+        async with Client(main.app) as client:
+            tool = next(t for t in await client.list_tools() if t.name == "Create_Dataset")
+            return tool.inputSchema
+
+    schema = asyncio.run(get_schema())
+    required = set(schema.get("required", []))
+    expected = {"title", "description", "authors", "contacts", "subjects", "collection"}
+    assert expected <= required, f"missing required params: {expected - required}"
+    print("[ok] Create_Dataset exposes required citation fields")
+
+
+def test_edit_dataset_tool_schema():
+    """Edit tool requires only `identifier`; citation fields are optional upserts."""
+    os.environ.pop("API_TOKEN", None)
+    from fastmcp import Client  # noqa: PLC0415
+
+    import main  # noqa: PLC0415
+
+    async def get_schema():
+        async with Client(main.app) as client:
+            tool = next(
+                t for t in await client.list_tools() if t.name == "Edit_Dataset_Metadata"
+            )
+            return tool.inputSchema
+
+    schema = asyncio.run(get_schema())
+    required = set(schema.get("required", []))
+    props = set(schema.get("properties", {}))
+    assert "identifier" in required, "identifier must be required"
+    assert required == {"identifier"}, f"only identifier should be required, got {required}"
+    assert {"authors", "contacts", "subjects"} <= props, "citation upsert fields missing"
+    print("[ok] Edit_Dataset_Metadata requires only identifier")
+
+
+def test_server_instructions_describe_write_workflow():
+    """Model-facing server instructions must frame create+enrich and the no-publish
+    rule, so the model can sequence the tools without a user-invoked prompt."""
+    os.environ.pop("API_TOKEN", None)
+    import main  # noqa: PLC0415
+
+    instr = main.app.instructions or ""
+    assert "Create_Dataset" in instr and "Edit_Dataset_Metadata" in instr
+    assert "COMPLETE" in instr, "must state the resend-full-list rule"
+    assert "Never publish" in instr, "must state draft-only / no-publish"
+    print("[ok] server instructions describe create+enrich workflow")
+
+
+def test_vocabulary_sources_configured():
+    """The app configures its own vocab sources (incl. TIB); the tool advertises them."""
+    os.environ.pop("API_TOKEN", None)
+    from fastmcp import Client  # noqa: PLC0415
+
+    import main  # noqa: PLC0415
+
+    async def get_desc():
+        async with Client(main.app) as client:
+            tool = next(
+                t for t in await client.list_tools() if t.name == "Search_Vocabulary"
+            )
+            return tool.description
+
+    desc = asyncio.run(get_desc())
+    for name in ("Wikidata", "TIB", "EBI OLS"):
+        assert name in desc, f"configured source {name!r} not advertised in tool description"
+    print("[ok] vocabulary sources configured + advertised (Wikidata, TIB, EBI OLS)")
 
 
 def test_run_without_token_fails_loud():
@@ -145,6 +226,10 @@ def test_install_writes_and_merges_on_disk():
 
 if __name__ == "__main__":
     test_serves_tools_over_mcp()
+    test_create_dataset_tool_schema()
+    test_edit_dataset_tool_schema()
+    test_server_instructions_describe_write_workflow()
+    test_vocabulary_sources_configured()
     test_run_without_token_fails_loud()
     test_install_entry_shape()
     test_install_merge_preserves_other_servers()

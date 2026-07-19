@@ -33,7 +33,7 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 from pyDataverse import Dataverse
-from pyDataverse.mcp import DataverseMCP
+from pyDataverse.mcp import DataverseMCP, MCPConfiguration, VocabularySource
 
 load_dotenv()
 
@@ -55,9 +55,26 @@ _version = tomllib.loads((Path(__file__).parent / "pyproject.toml").read_text())
 ]["version"]
 app = FastMCP(name="darus-mcp", version=_version)
 
-# Register Dataverse MCP tools with the application
-# This adds all Dataverse-related tools (search, metadata, files) to the MCP server
-DataverseMCP(dataverse=darus).to_mcp(app)
+# Register Dataverse MCP tools with the application.
+# dataset=["read", "create", "edit"] opts in to the draft write tools (needs API_TOKEN).
+# vocabulary_sources are DaRUS's choice of term services (kept out of generic pyDataverse):
+# Wikidata for general terms, plus the TIB Terminology Service for engineering/chemistry
+# ontologies (NFDI4Ing/NFDI4Chem), plus the EBI OLS for life sciences.
+DataverseMCP(
+    dataverse=darus,
+    config=MCPConfiguration(
+        dataset=["read", "create", "edit"],
+        vocabulary_sources=[
+            VocabularySource(name="Wikidata", type="wikidata"),
+            VocabularySource(
+                name="TIB", type="ols", base_url="https://api.terminology.tib.eu"
+            ),
+            VocabularySource(
+                name="EBI OLS", type="ols", base_url="https://www.ebi.ac.uk/ols4"
+            ),
+        ],
+    ),
+).to_mcp(app)
 
 if __name__ == "__main__":
     """

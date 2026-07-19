@@ -5,10 +5,10 @@ description = "DaRUS Review MCP Server"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "fastmcp==2.14.5",
+    "fastmcp==3.4.4",
     "pydataverse[mcp]",
     "python-dotenv>=1.2.1",
 ]
 
 [tool.uv.sources]
-pydataverse = { git = "https://github.com/gdcc/pyDataverse.git", branch = "refactor-api" }
+pydataverse = { path = "/Users/max/code/pyDataverse", editable = true }
