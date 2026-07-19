@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-pydataverse = { path = "/Users/max/code/pyDataverse", editable = true }
+pydataverse = { git = "https://github.com/haeussma/pyDataverse.git", branch = "dev" }
