@@ -35,36 +35,36 @@ The `darus-mcp` MCP server must be connected (tools appear as `Search_Dataverse`
 Work in this order — cheap, broad evidence first, then drill into files only
 where the metadata gives you something to check against.
 
-1. **Locate the dataset.** If the user gave a DOI/PID (e.g.
+1. **Load `references/rubric.md`.** It is the authoritative criteria list and
+   defines what each later step needs to collect and when a section applies.
+
+2. **Locate the dataset.** If the user gave a DOI/PID (e.g.
    `doi:10.18419/darus-XXXX`), use it directly. Otherwise `Search_Dataverse`
    to find it and confirm the match with the user before reviewing.
 
-2. **Pull the full metadata.** `Get_Dataset_Metadata` for the complete record
+3. **Pull the full metadata.** `Get_Dataset_Metadata` for the complete record
    (citation block + any discipline blocks like EngMeta, process, enzymeML). This
    is the backbone — most criteria are checked here. Read the description text
    carefully; you'll cross-reference it against files and schemas later.
 
-3. **List the files.** `List_Files_in_Dataset`. Note file roles/tags,
+4. **List the files.** `List_Files_in_Dataset`. Note file roles/tags,
    per-file descriptions, directory structure, formats, and whether a README or
    documentation file exists.
 
-4. **Inspect tabular data where it matters.** For each tabular file relevant to
+5. **Inspect tabular data where it matters.** For each tabular file relevant to
    the review, `Get_Tabular_File_Schema` for columns/types, and
    `Read_Tabular_File` for a small **sample** (not the whole file — reads can be
-   large) to check that values actually match their declared types and that
-   documented missing-data codes appear as described.
+   large).
 
-5. **Read the documentation** — the description, any README/codebook
+6. **Read the documentation** — the description, any README/codebook
    (`Read_File_Content`), and per-file descriptions. Read every surface that
-   exists; rubric section 6 defines how they count.
+   exists.
 
-6. **If code ships, read it.** For scripts (`.py`, `.R`, `.jl`, `.m`, `.ipynb`,
-   `.sh`, `.cpp`, …), `Read_File_Content` on the dependency and instruction files
-   so section 7 can be scored.
+7. **If the dataset ships code, read it.** `Read_File_Content` on the dependency
+   and instruction files so section 7 can be scored.
 
-7. **Cross-check and score** against `references/rubric.md` — load it now; it is
-   the authoritative criteria list. Run every criterion whose inputs exist. The
-   rows whose Evidence column contains `↔` are cross-tool checks; they are what
+8. **Cross-check and score.** Run every criterion whose inputs exist. The rows
+   whose Evidence column contains `↔` are cross-tool checks; they are what
    automated validators miss, so they usually carry the highest-value findings.
 
 Only pull as much file/table detail as the review needs. A completeness check of
