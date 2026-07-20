@@ -90,7 +90,20 @@ It is used to authenticate against DaRUS and allows access to restricted or unpu
 
 Without a valid token, the server cannot query protected repository content.
 
-### Install for Claude Desktop (MCP)
+### Install as a plugin (recommended for sharing)
+
+The `darus-review` plugin bundles the review **skill** with this **MCP server**, so one
+install gets both:
+
+```
+/plugin marketplace add SimTech-Research-Data-Management/darus-review-mcp
+/plugin install darus-review@darus
+```
+
+Requires `uv` on your `PATH` and a `DARUS_API_TOKEN` environment variable.
+See [plugins/darus-review/README.md](plugins/darus-review/README.md).
+
+### Install for Claude Desktop (MCP only)
 
 From the repository root:
 
@@ -126,4 +139,6 @@ The server starts on `http://0.0.0.0:8000` using `streamable-http` transport.
 - `install-claude.sh` - thin shell wrapper around the installer
 - `test_darus.py` - runnable checks (`uv run python test_darus.py`)
 - `docs/` - spec and implementation plan for the create-dataset workflow
+- `.claude-plugin/marketplace.json` - marketplace catalog so others can install the plugin
+- `plugins/darus-review/` - the shareable plugin: review skill + rubric + MCP wiring
 - `pyproject.toml` - project metadata and dependencies

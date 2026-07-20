@@ -1,0 +1,18 @@
+{
+  "mcpServers": {
+    "darus-mcp": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--project",
+        "${CLAUDE_PLUGIN_ROOT}/../..",
+        "fastmcp",
+        "run",
+        "${CLAUDE_PLUGIN_ROOT}/../../main.py"
+      ],
+      "env": {
+        "API_TOKEN": "${DARUS_API_TOKEN}"
+      }
+    }
+  }
+}

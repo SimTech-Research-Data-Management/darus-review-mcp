@@ -1,0 +1,15 @@
+{
+  "name": "darus",
+  "description": "Plugins for working with DaRUS and other Dataverse research data repositories.",
+  "owner": {
+    "name": "SimTech Research Data Management",
+    "url": "https://github.com/SimTech-Research-Data-Management"
+  },
+  "plugins": [
+    {
+      "name": "darus-review",
+      "source": "./plugins/darus-review",
+      "description": "Review DaRUS/Dataverse datasets for quality, FAIR compliance, and metadata consistency — includes the darus-mcp server for live repository access."
+    }
+  ]
+}
