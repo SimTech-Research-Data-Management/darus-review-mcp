@@ -62,9 +62,12 @@ where the metadata gives you something to check against.
    large) to check that values actually match their declared types and that
    documented missing-data codes appear as described.
 
-5. **Read the documentation.** If a README/codebook exists,
-   `Read_File_Content` on it, so you can check column definitions, units, and
-   missing-data codes against the real schema.
+5. **Read the documentation.** Documentation lives on three surfaces: the dataset
+   description, a README/codebook file (`Read_File_Content`), and per-file
+   descriptions. Column definitions, units, and missing-data codes may be given on
+   **any** of them — read every surface that exists before concluding something is
+   undocumented, and say which one you found it on. A dataset with no README but a
+   thorough description is documented (rubric section 6).
 
 6. **If the dataset contains code/software, check it can actually be run.** Data
    without runnable analysis code is only half-reproducible. When you see scripts
@@ -93,10 +96,14 @@ the ones whose inputs exist:
   the file list, and no substantive file is left undocumented.
 - **Description ↔ tabular schema**: variables/quantities named in the prose
   appear as real columns (and vice versa).
+- **Description ↔ README**: where a README exists, the landing-page description
+  covers its substance — a reader shouldn't have to download files to grasp what
+  the data is, how it was produced, and what the main variables mean (rubric 2.4).
 - **EngMeta ↔ data**: discipline metadata (measured/controlled variables, system
   parameters, resolution) is reflected in the actual files/columns.
 - **Schema ↔ values**: column types match sampled values; declared units and
-  missing-data codes are consistent with what's in the README and the data.
+  missing-data codes are consistent between the documentation (description,
+  README, or per-file descriptions) and the data.
 - **Code ↔ dependencies ↔ instructions**: if scripts are present, their imports
   are covered by a declared dependency manifest, and a reader is told how to
   install and run them (see rubric section 7).

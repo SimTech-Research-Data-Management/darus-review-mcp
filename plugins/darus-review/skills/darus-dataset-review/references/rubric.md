@@ -43,13 +43,6 @@ Failing any of these is **blocking** — the record is considered not publishabl
 | 2.4 | Description covers the substance of the README, if one exists — the landing page stands alone | README explains methods, variables or usage that the description omits, so the dataset can't be understood without downloading files | `Read_File_Content` on README ↔ `Get_Dataset_Metadata` → dsDescription |
 | 2.5 | Funding / public-financing documented | Public-funded, no grant info | `Get_Dataset_Metadata` → grantNumber |
 
-Why 2.4 matters: the description is what appears on the landing page, gets indexed by
-search engines, and is harvested by DataCite/OAI-PMH. A README sits inside the files and
-is none of those — so knowledge that lives only there is invisible to anyone deciding
-whether the dataset is worth downloading. The description need not duplicate the README
-verbatim, but a reader should not have to open files to grasp what the data is, how it
-was produced, and what the main variables mean.
-
 ## 3. Discipline metadata — EngMeta (CSE / engineering data)
 
 DaRUS ships a dedicated **EngMeta** block (`EngMetaDataverse.tsv` +
@@ -80,20 +73,30 @@ explicitly called out as non-FAIR.
 | 5.1 | Files tagged by role (data vs. documentation) | Untagged pile | `List_Files_in_Dataset` → tags |
 | 5.2 | Per-file descriptions present | Files with no description | `List_Files_in_Dataset` |
 | 5.3 | Directory hierarchy via path field when many files | Flat dump of many files | `List_Files_in_Dataset` → directoryLabel |
-| 5.4 | A README / documentation file exists | Data-only, no docs | `List_Files_in_Dataset` (look for README) |
-| 5.5 | Open/portable formats where an open alternative exists | Proprietary-only (e.g. `.xlsx` not `.csv`, vendor-locked binaries) with no open export alongside | `List_Files_in_Dataset` → mime_type |
+| 5.4 | Open/portable formats where an open alternative exists | Proprietary-only (e.g. `.xlsx` not `.csv`, vendor-locked binaries) with no open export alongside | `List_Files_in_Dataset` → mime_type |
 
 ## 6. Tabular data ↔ documentation consistency
 
 The heart of a consistency review. Run these whenever tabular files exist.
 
+**"Documentation" below means any of three surfaces**: the dataset description
+(`Get_Dataset_Metadata` → dsDescription), a README or other doc file
+(`Read_File_Content`), or per-file descriptions (`List_Files_in_Dataset`). A variable
+counts as documented if **any** of them defines it — check every surface that exists
+before flagging, and name in the finding where the definition was found or missing.
+Do not fail these criteria merely because there is no README; that is 5.4's job.
+
+This is independent of 2.4: a dataset can satisfy 6.x via a thorough README while still
+failing 2.4 because the landing-page description alone isn't self-sufficient. Report
+them as separate findings, not one issue counted twice.
+
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
-| 6.1 | Every column has a documented name + definition | Column `v2` defined nowhere | `Get_Tabular_File_Schema` ↔ README (`Read_File_Content`) |
-| 6.2 | Units of measurement documented per variable | Numeric columns, no units | schema ↔ README |
-| 6.3 | Missing-data codes defined | `-999`/`NA` used but undefined | `Read_Tabular_File` (sample) ↔ README |
+| 6.1 | Every column has a documented name + definition | Column `v2` defined in no documentation surface | `Get_Tabular_File_Schema` ↔ documentation |
+| 6.2 | Units of measurement documented per variable | Numeric columns, no units anywhere | schema ↔ documentation |
+| 6.3 | Missing-data codes defined | `-999`/`NA` used but undefined | `Read_Tabular_File` (sample) ↔ documentation |
 | 6.4 | Column types match actual values | Numeric column holds text; broken date column | `Get_Tabular_File_Schema` ↔ sampled `Read_Tabular_File` |
-| 6.5 | Column set matches what description/README claims | README lists 8 variables; table has 5 | schema ↔ description/README |
+| 6.5 | Column set matches what the documentation claims | README or description lists 8 variables; table has 5 | schema ↔ documentation |
 
 ## 7. Computational reproducibility — code & software
 
