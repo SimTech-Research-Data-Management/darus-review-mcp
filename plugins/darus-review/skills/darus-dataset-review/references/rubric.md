@@ -40,7 +40,15 @@ Failing any of these is **blocking** — the record is considered not publishabl
 | 2.1 | Description lets a third party understand & reuse the data | Vague one-liner; no method/context | `Get_Dataset_Metadata` → dsDescription |
 | 2.2 | Every file/table/directory named in the description exists | Description cites a file not in the list, or files nobody explains | description ↔ `List_Files_in_Dataset` |
 | 2.3 | Variables/quantities named in the description match real columns | Prose names variables the tables lack | description ↔ `Get_Tabular_File_Schema` |
-| 2.4 | Funding / public-financing documented | Public-funded, no grant info | `Get_Dataset_Metadata` → grantNumber |
+| 2.4 | Description covers the substance of the README, if one exists — the landing page stands alone | README explains methods, variables or usage that the description omits, so the dataset can't be understood without downloading files | `Read_File_Content` on README ↔ `Get_Dataset_Metadata` → dsDescription |
+| 2.5 | Funding / public-financing documented | Public-funded, no grant info | `Get_Dataset_Metadata` → grantNumber |
+
+Why 2.4 matters: the description is what appears on the landing page, gets indexed by
+search engines, and is harvested by DataCite/OAI-PMH. A README sits inside the files and
+is none of those — so knowledge that lives only there is invisible to anyone deciding
+whether the dataset is worth downloading. The description need not duplicate the README
+verbatim, but a reader should not have to open files to grasp what the data is, how it
+was produced, and what the main variables mean.
 
 ## 3. Discipline metadata — EngMeta (CSE / engineering data)
 
