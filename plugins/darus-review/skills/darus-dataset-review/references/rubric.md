@@ -41,9 +41,9 @@ Failing any of these is **blocking** — the record is considered not publishabl
 
 ## 3. Discipline metadata — EngMeta (CSE / engineering data)
 
-Applies to computational-science/engineering data (DaRUS **EngMeta** block). Mark
-N/A for other data rather than failing it. Context conveyed only via file/folder
-names instead of these fields counts as a violation, not a pass.
+Applies to computational-science/engineering data (DaRUS **EngMeta** block).
+Context conveyed only via file/folder names instead of these fields is a
+violation, not a pass.
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
@@ -87,7 +87,7 @@ finding, not a 6.x failure; a 2.4 gap is a separate finding, not a second count.
 ## 7. Computational reproducibility — code & software
 
 Applies when the dataset ships code (`.py`, `.R`, `.jl`, `.m`, `.ipynb`, `.sh`,
-`.c/.cpp`, `.f90`, …). Mark N/A for data-only datasets rather than failing them.
+`.c/.cpp`, `.f90`, …).
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|

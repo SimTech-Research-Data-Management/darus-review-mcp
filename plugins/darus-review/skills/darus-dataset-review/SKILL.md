@@ -22,13 +22,10 @@ Review a DaRUS dataset by pulling its real metadata, files, and tabular schemas
 via `darus-mcp` and checking them against `references/rubric.md`. Every finding
 must point at a specific field, file, or column.
 
-Prioritise **internal inconsistency** — what automated validators miss: the
-description promises variables the tables lack, EngMeta names a parameter no file
-records, a column typed numeric holds text.
-
 ## Prerequisites
 
-The `darus-mcp` MCP server must be connected (tools appear as `Search_Dataverse`, `Get_Dataset_Metadata`, `List_Files_in_Dataset`, `Get_Tabular_File_Schema`, `Read_Tabular_File`, `Read_File_Content`, ...).
+The `darus-mcp` MCP server must be connected. If its tools aren't available, say
+so rather than reviewing from the landing page or memory.
 
 ## Workflow
 
