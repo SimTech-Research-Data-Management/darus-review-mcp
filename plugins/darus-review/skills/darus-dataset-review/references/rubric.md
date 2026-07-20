@@ -1,11 +1,7 @@
 # DaRUS Dataset Review Rubric
 
-Authoritative, evidence-tied criteria for reviewing a single DaRUS/Dataverse
-dataset record. Each criterion states what to check, what confirms or violates
-it, and which `darus-mcp` tool surfaces the evidence.
-
-Derived from a verified web-research pass. Sources are listed at the bottom;
-confidence caveats are called out inline.
+Criteria for reviewing a single DaRUS/Dataverse record. Each row: what to check,
+what a violation looks like, and which `darus-mcp` tool shows the evidence.
 
 ## Contents
 1. Mandatory identity & citation (hard gate)
@@ -45,11 +41,9 @@ Failing any of these is **blocking** — the record is considered not publishabl
 
 ## 3. Discipline metadata — EngMeta (CSE / engineering data)
 
-DaRUS ships a dedicated **EngMeta** block (`EngMetaDataverse.tsv` +
-`process.tsv`, doi:10.18419/darus-508). Applies to computational-science and
-engineering datasets; mark as N/A for unrelated data rather than failing it.
-Documenting context only via file/folder names (instead of these fields) is
-explicitly called out as non-FAIR.
+Applies to computational-science/engineering data (DaRUS **EngMeta** block). Mark
+N/A for other data rather than failing it. Context conveyed only via file/folder
+names instead of these fields counts as a violation, not a pass.
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
@@ -77,18 +71,10 @@ explicitly called out as non-FAIR.
 
 ## 6. Tabular data ↔ documentation consistency
 
-The heart of a consistency review. Run these whenever tabular files exist.
-
-**"Documentation" below means any of three surfaces**: the dataset description
-(`Get_Dataset_Metadata` → dsDescription), a README or other doc file
-(`Read_File_Content`), or per-file descriptions (`List_Files_in_Dataset`). A variable
-counts as documented if **any** of them defines it — check every surface that exists
-before flagging, and name in the finding where the definition was found or missing.
-Do not fail these criteria merely because there is no README; that is 5.4's job.
-
-This is independent of 2.4: a dataset can satisfy 6.x via a thorough README while still
-failing 2.4 because the landing-page description alone isn't self-sufficient. Report
-them as separate findings, not one issue counted twice.
+Run whenever tabular files exist. **Documentation** = the dataset description, a
+README/doc file, or per-file descriptions; a variable is documented if **any** of
+them defines it, so check all that exist and name which one. No README is 5.4's
+finding, not a 6.x failure; a 2.4 gap is a separate finding, not a second count.
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
@@ -100,11 +86,8 @@ them as separate findings, not one issue counted twice.
 
 ## 7. Computational reproducibility — code & software
 
-Applies when the dataset ships analysis/simulation **code** (`.py`, `.R`, `.jl`,
-`.m`, `.ipynb`, `.sh`, `.c/.cpp`, `.f90`, …). Data alone is only half the story:
-if a reader can't tell what to install or how to run it, the results aren't
-reproducible. This maps onto EngMeta's process block and DaRUS's CodeMeta block.
-Mark N/A for data-only datasets rather than failing them.
+Applies when the dataset ships code (`.py`, `.R`, `.jl`, `.m`, `.ipynb`, `.sh`,
+`.c/.cpp`, `.f90`, …). Mark N/A for data-only datasets rather than failing them.
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
@@ -117,37 +100,31 @@ Mark N/A for data-only datasets rather than failing them.
 | 7.7 | Determinism captured where it matters | Stochastic simulation/ML with no random seed set or recorded → results not reproducible | script/README |
 | 7.8 | Code carries a (software) license | Data license present but code has none — reuse of the code is legally unclear (CodeMeta) | `Get_Dataset_Metadata` / a `LICENSE` file |
 
-Environment aids that strengthen 7.1–7.4 when present: a `Dockerfile` /
-`apptainer`/`singularity` recipe, a `Makefile` or `snakemake`/`nextflow`
-workflow, or a `.python-version`/`runtime.txt`. Note their presence as a plus;
-their absence is not itself a failure if a manifest + instructions exist.
+Plus (not required): `Dockerfile`/`apptainer` recipe, `Makefile`/`snakemake`/
+`nextflow` workflow, `.python-version`/`runtime.txt`. Absence is not a failure
+when a manifest + instructions exist.
 
 ## 8. Overall reproducibility & curation
 
-- **7.1 Reproducible & understandable** — the binding Uni Stuttgart standard:
-  results from experiments/simulations must be reproducible from the record
-  alone. Judge holistically once 1–6 are checked.
-- **7.2 Evidence of curation** — DaRUS uses a three-stage gate (author
-  self-check → content-curator review → library formal check for completeness,
-  comprehensibility, reproducibility). A published DaRUS record has cleared it;
-  your review mirrors the same three questions.
-- **7.3 License present** — reuse is blocked without one.
-  `Get_Dataset_Metadata` → license.
+Judge holistically, once sections 1–7 are checked.
+
+| # | Criterion | Violation looks like | Evidence |
+|---|-----------|----------------------|----------|
+| 8.1 | Results reproducible from the record alone (binding Uni Stuttgart standard) | A reader could not repeat the work from what is deposited | sections 1–7 |
+| 8.2 | Complete, comprehensible, reproducible — the three DaRUS curation questions | Record reads as an unreviewed dump | holistic |
+| 8.3 | License present | No license — reuse legally blocked | `Get_Dataset_Metadata` → license |
 
 ## 9. Confidence caveats
 
-Respect these when reporting — don't present encouraged practice as a mandate.
+Don't present encouraged practice as a mandate.
 
-- **Refuted (do not enforce):** that SimTech *mandates* DaRUS deposit for every
-  published article. It is strongly encouraged, but no hard mandate was
-  verifiable. Frame as a recommendation only.
-- **Lower confidence (2-of-3 verification):** FoKUS as the EngMeta maintainer,
-  and the exact EngMeta→citation-block field mapping. Directionally sound; don't
-  over-index on the mapping specifics.
-- **Applicability:** Sections 3 and 4 (EngMeta discipline/process) apply to
-  computational-science/engineering datasets, and section 7 (code) applies only
-  when the dataset ships code. For survey/tabular-only or data-only datasets,
-  mark the non-applicable sections not-applicable rather than failing them.
+- **Do not enforce:** SimTech does *not* mandate DaRUS deposit per published
+  article. Frame as a recommendation only.
+- **Lower confidence:** FoKUS as EngMeta maintainer, and the exact
+  EngMeta→citation field mapping. Don't over-index on mapping specifics.
+- **Applicability:** sections 3–4 apply to computational-science/engineering
+  data, section 7 only when code ships. Mark non-applicable sections N/A rather
+  than failing them.
 
 ## 10. Sources
 

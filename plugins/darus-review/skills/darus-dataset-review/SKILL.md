@@ -18,16 +18,13 @@ description: >-
 
 ## What this does
 
-Turn a DaRUS dataset into grounded review feedback by pulling its actual
-metadata, files, and tabular schemas through the `darus-mcp` tools and checking
-them against a rubric distilled from DaRUS/FoKUS curation guidance, EngMeta, and
-FAIR. The value is that findings are **evidence-based** — every issue points at a
-specific metadata field, file, or column, not a vibe.
+Review a DaRUS dataset by pulling its real metadata, files, and tabular schemas
+via `darus-mcp` and checking them against `references/rubric.md`. Every finding
+must point at a specific field, file, or column.
 
-The single most important thing a reviewer catches that automated validators
-miss is **internal inconsistency**: the description promises variables the tables
-don't contain, EngMeta lists a parameter no file records, a column is typed
-numeric but holds text. Keep that cross-checking front of mind.
+Prioritise **internal inconsistency** — what automated validators miss: the
+description promises variables the tables lack, EngMeta names a parameter no file
+records, a column typed numeric holds text.
 
 ## Prerequisites
 
@@ -62,26 +59,19 @@ where the metadata gives you something to check against.
    large) to check that values actually match their declared types and that
    documented missing-data codes appear as described.
 
-5. **Read the documentation.** Documentation lives on three surfaces: the dataset
-   description, a README/codebook file (`Read_File_Content`), and per-file
-   descriptions. Column definitions, units, and missing-data codes may be given on
-   **any** of them — read every surface that exists before concluding something is
-   undocumented, and say which one you found it on. A dataset with no README but a
-   thorough description is documented (rubric section 6).
+5. **Read the documentation** — the description, any README/codebook
+   (`Read_File_Content`), and per-file descriptions. Definitions, units and
+   missing-data codes may live on **any** of them: read all that exist before
+   calling something undocumented, and say which one you found it on.
 
-6. **If the dataset contains code/software, check it can actually be run.** Data
-   without runnable analysis code is only half-reproducible. When you see scripts
-   or source files (`.py`, `.R`, `.jl`, `.m`, `.ipynb`, `.sh`, `.cpp`, …),
-   `Read_File_Content` on the dependency and instruction files and verify the
-   record answers "what do I install, and how do I run this?". See rubric
-   section 7 for the full checklist; the essentials are a **dependency manifest**
-   (Python: `pyproject.toml` / `uv.lock` / `requirements.txt` / `environment.yml`;
-   and the equivalents for other languages) and **execution instructions** (a
-   README saying how to run it, with the entry point named).
+6. **If code ships, check it can be run.** For scripts (`.py`, `.R`, `.jl`, `.m`,
+   `.ipynb`, `.sh`, `.cpp`, …), `Read_File_Content` on the dependency and
+   instruction files: does the record answer "what do I install, and how do I run
+   this?" Essentials are a **dependency manifest** and **execution instructions**
+   naming the entry point (rubric section 7).
 
-7. **Cross-check and score** against `references/rubric.md`. Load that file now —
-   it is the authoritative criteria list, each tied to the evidence that confirms
-   or violates it, with source citations and confidence caveats.
+7. **Cross-check and score** against `references/rubric.md` — load it now; it is
+   the authoritative criteria list.
 
 Only pull as much file/table detail as the review needs. A completeness check of
 citation metadata doesn't require reading every CSV; a "do the tables match the
