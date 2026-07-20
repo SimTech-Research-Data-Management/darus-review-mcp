@@ -4,8 +4,7 @@ Authoritative, evidence-tied criteria for reviewing a single DaRUS/Dataverse
 dataset record. Each criterion states what to check, what confirms or violates
 it, and which `darus-mcp` tool surfaces the evidence.
 
-Derived from a verified web-research pass (81 extracted claims → 24 confirmed via
-3-vote adversarial verification, 1 refuted). Sources are listed at the bottom;
+Derived from a verified web-research pass. Sources are listed at the bottom;
 confidence caveats are called out inline.
 
 ## Contents
@@ -24,8 +23,7 @@ confidence caveats are called out inline.
 
 ## 1. Mandatory identity & citation (hard gate)
 
-Failing any of these is normally **blocking** — the record shouldn't be
-considered publishable.
+Failing any of these is **blocking** — the record is considered not publishable.
 
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
@@ -40,7 +38,7 @@ considered publishable.
 | # | Criterion | Violation looks like | Evidence |
 |---|-----------|----------------------|----------|
 | 2.1 | Description lets a third party understand & reuse the data | Vague one-liner; no method/context | `Get_Dataset_Metadata` → dsDescription |
-| 2.2 | Every file/table named in the description exists; no undocumented orphan files | Description cites a file not in the list, or files nobody explains | description ↔ `List_Files_in_Dataset` |
+| 2.2 | Every file/table/directory named in the description exists | Description cites a file not in the list, or files nobody explains | description ↔ `List_Files_in_Dataset` |
 | 2.3 | Variables/quantities named in the description match real columns | Prose names variables the tables lack | description ↔ `Get_Tabular_File_Schema` |
 | 2.4 | Funding / public-financing documented | Public-funded, no grant info | `Get_Dataset_Metadata` → grantNumber |
 
@@ -75,7 +73,7 @@ explicitly called out as non-FAIR.
 | 5.2 | Per-file descriptions present | Files with no description | `List_Files_in_Dataset` |
 | 5.3 | Directory hierarchy via path field when many files | Flat dump of many files | `List_Files_in_Dataset` → directoryLabel |
 | 5.4 | A README / documentation file exists | Data-only, no docs | `List_Files_in_Dataset` (look for README) |
-| 5.5 | Portable/open formats; per-file checksum & PID | Proprietary-only; no checksums | `List_Files_in_Dataset` |
+| 5.5 | Open/portable formats where an open alternative exists | Proprietary-only (e.g. `.xlsx` not `.csv`, vendor-locked binaries) with no open export alongside | `List_Files_in_Dataset` → mime_type |
 
 ## 6. Tabular data ↔ documentation consistency
 
