@@ -28,12 +28,7 @@ records, a column typed numeric holds text.
 
 ## Prerequisites
 
-- The `darus-mcp` MCP server must be connected (tools appear as
-  `Search_Dataverse`, `Get_Dataset_Metadata`, `List_Files_in_Dataset`,
-  `Get_Tabular_File_Schema`, `Read_Tabular_File`, `Read_File_Content`, …).
-- Restricted or draft datasets need a valid `API_TOKEN` on the server. If a call
-  returns nothing for a dataset the user says exists, suspect an access/token
-  issue rather than an empty dataset, and say so.
+The `darus-mcp` MCP server must be connected (tools appear as `Search_Dataverse`, `Get_Dataset_Metadata`, `List_Files_in_Dataset`, `Get_Tabular_File_Schema`, `Read_Tabular_File`, `Read_File_Content`, ...).
 
 ## Workflow
 
@@ -60,43 +55,21 @@ where the metadata gives you something to check against.
    documented missing-data codes appear as described.
 
 5. **Read the documentation** — the description, any README/codebook
-   (`Read_File_Content`), and per-file descriptions. Definitions, units and
-   missing-data codes may live on **any** of them: read all that exist before
-   calling something undocumented, and say which one you found it on.
+   (`Read_File_Content`), and per-file descriptions. Read every surface that
+   exists; rubric section 6 defines how they count.
 
-6. **If code ships, check it can be run.** For scripts (`.py`, `.R`, `.jl`, `.m`,
-   `.ipynb`, `.sh`, `.cpp`, …), `Read_File_Content` on the dependency and
-   instruction files: does the record answer "what do I install, and how do I run
-   this?" Essentials are a **dependency manifest** and **execution instructions**
-   naming the entry point (rubric section 7).
+6. **If code ships, read it.** For scripts (`.py`, `.R`, `.jl`, `.m`, `.ipynb`,
+   `.sh`, `.cpp`, …), `Read_File_Content` on the dependency and instruction files
+   so section 7 can be scored.
 
 7. **Cross-check and score** against `references/rubric.md` — load it now; it is
-   the authoritative criteria list.
+   the authoritative criteria list. Run every criterion whose inputs exist. The
+   rows whose Evidence column contains `↔` are cross-tool checks; they are what
+   automated validators miss, so they usually carry the highest-value findings.
 
 Only pull as much file/table detail as the review needs. A completeness check of
 citation metadata doesn't require reading every CSV; a "do the tables match the
 description" check does.
-
-## The consistency checks that matter most
-
-These are the cross-tool checks a rubric-by-itself won't make for you. Always run
-the ones whose inputs exist:
-
-- **Description ↔ files**: every file/table named in the description exists in
-  the file list, and no substantive file is left undocumented.
-- **Description ↔ tabular schema**: variables/quantities named in the prose
-  appear as real columns (and vice versa).
-- **Description ↔ README**: where a README exists, the landing-page description
-  covers its substance — a reader shouldn't have to download files to grasp what
-  the data is, how it was produced, and what the main variables mean (rubric 2.4).
-- **EngMeta ↔ data**: discipline metadata (measured/controlled variables, system
-  parameters, resolution) is reflected in the actual files/columns.
-- **Schema ↔ values**: column types match sampled values; declared units and
-  missing-data codes are consistent between the documentation (description,
-  README, or per-file descriptions) and the data.
-- **Code ↔ dependencies ↔ instructions**: if scripts are present, their imports
-  are covered by a declared dependency manifest, and a reader is told how to
-  install and run them (see rubric section 7).
 
 ## Reporting the review
 
@@ -113,8 +86,7 @@ For each rubric dimension, a short status line and only the notable items:
 - ✅ Pass / ⚠️ Weak / ❌ Fail — <criterion> — <evidence: field/file/column> — <what's wrong>
 
 ## Consistency issues
-The cross-checks above that failed, each with the two pieces of evidence that
-disagree.
+Failed `↔` criteria, each with the two pieces of evidence that disagree.
 
 ## Recommended fixes
 Ordered, concrete, and actionable — what to add/change and where.
@@ -125,11 +97,8 @@ Grounding rules that keep the review trustworthy:
 - **Cite the evidence.** Every finding names the metadata field, file, or column
   it's based on. "Description is vague" is useless; "Description (3 sentences)
   states no method or software; violates rubric 2.1" is a finding.
-- **Distinguish blocking from cosmetic.** A missing Contact email or DOI is a
-  hard gate; a missing per-file description is a polish item. Say which.
-- **Don't invent requirements.** The rubric flags a few lower-confidence and one
-  refuted criterion (see the caveats in `references/rubric.md`) — respect those
-  labels and don't present encouraged practices as mandates.
-- **Applicability first.** EngMeta discipline/process criteria apply to
-  computational-science/engineering datasets. For a pure tabular-survey dataset,
-  note them as not-applicable rather than failing them.
+- **Distinguish blocking from cosmetic.** Say which, per the rubric's section 1
+  hard gate.
+- **Obey the rubric's own limits** — its applicability and confidence-caveat
+  rules (sections 3, 7, 9) decide what to mark N/A and what not to enforce. Don't
+  restate or override them here.

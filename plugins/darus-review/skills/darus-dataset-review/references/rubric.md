@@ -118,8 +118,6 @@ Judge holistically, once sections 1–7 are checked.
 
 Don't present encouraged practice as a mandate.
 
-- **Do not enforce:** SimTech does *not* mandate DaRUS deposit per published
-  article. Frame as a recommendation only.
 - **Lower confidence:** FoKUS as EngMeta maintainer, and the exact
   EngMeta→citation field mapping. Don't over-index on mapping specifics.
 - **Applicability:** sections 3–4 apply to computational-science/engineering
